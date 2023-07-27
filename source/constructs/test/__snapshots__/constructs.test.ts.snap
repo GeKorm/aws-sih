@@ -1167,7 +1167,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "78b436c469309e023e523cd541ba11447338133693d9c1a1fc5d6083b20fc58c.zip",
+          "S3Key": "d1e317ec576e7abd1be6bb21584e9fbcb10bd7676958b88bea2fc6e40879224f.zip",
         },
         "Description": "sih (v6.1.0): Performs image edits and manipulations",
         "Environment": {
@@ -1215,7 +1215,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Tags": [
           {
             "Key": "SolutionId",
@@ -1303,7 +1303,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
     "CommonResourcesCustomResourcesCustomResourceAnonymousMetric51363F57": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "AnonymousData": "Yes",
+        "AnonymousData": "No",
         "AutoWebP": {
           "Ref": "AutoWebPParameter",
         },
@@ -1434,7 +1434,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "1366d04b3952cb14d9e5fb6177cebae1fbe15d99d032564494443c3126f4d196.zip",
+          "S3Key": "4bb16b09201f52a28ec7ef8c5f4f9e4b4e53ed05a8bb28c4a9f6189a74b34ddb.zip",
         },
         "Description": "sih (v6.1.0): Custom resource",
         "Environment": {
@@ -1453,7 +1453,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Tags": [
           {
             "Key": "SolutionId",
@@ -1597,7 +1597,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "5d8d1d0aacea23824c62f362e1e3c14b7dd14a31c71b53bfae4d14a6373c5510.zip",
+          "S3Key": "e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -1622,7 +1622,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           },
         ],
         "SourceObjectKeys": [
-          "297994e5975cd83b2ec43f52720181be7d5daf08af8987cc4d5749f99db8f777.zip",
+          "beaf0371aab584813c7b607eaa04a5a81d123325bfa846c9980dbef21833f840.zip",
         ],
       },
       "Type": "Custom::CDKBucketDeployment",
@@ -1774,7 +1774,12 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "2bc265c5e0569aeb24a6349c15bd54e76e845892376515e036627ab0cc70bb64.zip",
+          "S3Key": "9eb41a5505d37607ac419321497a4f8c21cf0ee1f9b4a6b29aa04301aea5c7fd.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem",
+          },
         },
         "Handler": "index.handler",
         "Layers": [
