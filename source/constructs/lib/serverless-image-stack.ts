@@ -133,7 +133,7 @@ export class ServerlessImageHandlerStack extends Stack {
     const solutionMapping = new CfnMapping(this, "Solution", {
       mapping: {
         Config: {
-          AnonymousUsage: "Yes",
+          AnonymousUsage: "No",
           SolutionId: props.solutionId,
           Version: props.solutionVersion,
         },
