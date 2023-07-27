@@ -88,7 +88,7 @@ export class BackEnd extends Construct {
     const imageHandlerLambdaFunction = new NodejsFunction(this, "ImageHandlerLambdaFunction", {
       description: `${props.solutionName} (${props.solutionVersion}): Performs image edits and manipulations`,
       memorySize: 1024,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       timeout: Duration.minutes(15),
       role: imageHandlerLambdaFunctionRole,
       entry: path.join(__dirname, "../../../image-handler/index.ts"),

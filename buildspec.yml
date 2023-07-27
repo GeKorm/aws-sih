@@ -3,10 +3,10 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 16
+      nodejs: 18
   pre_build:
     commands:
-      - n 14
+      - n 18
       - echo "Installing dependencies and executing unit tests - `pwd`"
       - cd deployment && chmod +x ./run-unit-tests.sh && ./run-unit-tests.sh
       - echo "Installing dependencies and executing unit tests completed `date`"
