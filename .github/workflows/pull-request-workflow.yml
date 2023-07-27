@@ -1,9 +1,9 @@
 name: Pull Request Workflow
 
 on:
-  push: 
+  push:
     branches:
-      - '*'
+      - "*"
   pull_request:
     types: [opened, edited, reopened, synchronize]
 

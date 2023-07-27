@@ -21,7 +21,7 @@ if (DIST_OUTPUT_BUCKET && SOLUTION_NAME && VERSION)
 const app = new App();
 // eslint-disable-next-line no-new
 new ServerlessImageHandlerStack(app, "ServerlessImageHandlerStack", {
-  synthesizer: synthesizer,
+  synthesizer,
   solutionId: app.node.tryGetContext("solutionId"),
   solutionVersion: app.node.tryGetContext("solutionVersion"),
   solutionName: app.node.tryGetContext("solutionName"),

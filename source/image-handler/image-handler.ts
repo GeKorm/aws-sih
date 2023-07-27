@@ -21,7 +21,10 @@ import {
 export class ImageHandler {
   private readonly LAMBDA_PAYLOAD_LIMIT = 6 * 1024 * 1024;
 
-  constructor(private readonly s3Client: S3, private readonly rekognitionClient: Rekognition) {}
+  constructor(
+    private readonly s3Client: S3,
+    private readonly rekognitionClient: Rekognition
+  ) {}
 
   /**
    * Creates a Sharp object from Buffer

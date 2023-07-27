@@ -1,9 +1,9 @@
 module.exports = {
-  roots: ['<rootDir>/test'],
-  testMatch: ['**/*.spec.ts'],
+  roots: ["<rootDir>/test"],
+  testMatch: ["**/*.spec.ts"],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    "^.+\\.tsx?$": "ts-jest",
   },
-  coverageReporters: ['text', ['lcov', { projectRoot: '../' }]],
-  setupFiles: ['./test/setJestEnvironmentVariables.ts']
+  coverageReporters: ["text", ["lcov", { projectRoot: "../" }]],
+  setupFiles: ["./test/setJestEnvironmentVariables.ts"],
 };
