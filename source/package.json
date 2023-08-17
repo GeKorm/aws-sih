@@ -1,6 +1,6 @@
 {
   "name": "source",
-  "version": "6.1.1",
+  "version": "6.2.1",
   "private": true,
   "description": "ESLint and prettier dependencies to be used within the solution",
   "license": "Apache-2.0",
@@ -13,9 +13,9 @@
     "install:dependencies": "npm run install:custom-resource && npm run install:image-handler"
   },
   "devDependencies": {
-    "@types/node": "^18.8.0",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
+    "@types/node": "^20.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-config-standard": "^17.1.0",
@@ -25,5 +25,13 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0"
+  },
+  "overrides": {
+    "semver": "7.5.2",
+    "word-wrap": "npm:@aashutoshrathi/word-wrap"
+  },
+  "resolutions": {
+    "semver": "7.5.2",
+    "word-wrap": "aashutoshrathi/word-wrap"
   }
 }

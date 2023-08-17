@@ -350,29 +350,12 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "Solutions:ApplicationType": "AWS-Solutions",
           "Solutions:SolutionID": "S0ABC",
           "Solutions:SolutionName": "sih",
-          "Solutions:SolutionVersion": "v6.1.0",
+          "Solutions:SolutionVersion": "v6.2.1",
         },
       },
       "Type": "AWS::ServiceCatalogAppRegistry::Application",
     },
-    "AppRegistryAttributeGroupAssociation976df7cb6520717F54D8": {
-      "Properties": {
-        "Application": {
-          "Fn::GetAtt": [
-            "AppRegistry968496A3",
-            "Id",
-          ],
-        },
-        "AttributeGroup": {
-          "Fn::GetAtt": [
-            "DefaultApplicationAttributesFC1CC26B",
-            "Id",
-          ],
-        },
-      },
-      "Type": "AWS::ServiceCatalogAppRegistry::AttributeGroupAssociation",
-    },
-    "AppRegistryResourceAssociation90d754752bad5B61E8BE": {
+    "AppRegistryAssociation": {
       "Properties": {
         "Application": {
           "Fn::GetAtt": [
@@ -1167,9 +1150,9 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "d1e317ec576e7abd1be6bb21584e9fbcb10bd7676958b88bea2fc6e40879224f.zip",
+          "S3Key": "82f1ba8dc3b6177b733d951f282f5451925f6fb067ddd9626328d91468b7c9fc.zip",
         },
-        "Description": "sih (v6.1.0): Performs image edits and manipulations",
+        "Description": "sih (v6.2.1): Performs image edits and manipulations",
         "Environment": {
           "Variables": {
             "AUTO_WEBP": {
@@ -1434,15 +1417,15 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "4bb16b09201f52a28ec7ef8c5f4f9e4b4e53ed05a8bb28c4a9f6189a74b34ddb.zip",
+          "S3Key": "1d9c0f7ba21ae4df4d9f33af092ffe6bf4c806ea06398e947419c4e7f091d52b.zip",
         },
-        "Description": "sih (v6.1.0): Custom resource",
+        "Description": "sih (v6.2.1): Custom resource",
         "Environment": {
           "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "RETRY_SECONDS": "5",
             "SOLUTION_ID": "S0ABC",
-            "SOLUTION_VERSION": "v6.1.0",
+            "SOLUTION_VERSION": "v6.2.1",
           },
         },
         "Handler": "index.handler",
@@ -1592,18 +1575,20 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
       "UpdateReplacePolicy": "Delete",
     },
     "CommonResourcesCustomResourcesDeployWebsiteAwsCliLayerBC025F39": {
+      "Condition": "CommonResourcesDeployDemoUICondition308D3B09",
       "Properties": {
         "Content": {
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642.zip",
+          "S3Key": "f8e422c63159c82c409e8254300a3134e020892c27382902d4c8c0a5b35d0a06.zip",
         },
         "Description": "/opt/awscli/aws",
       },
       "Type": "AWS::Lambda::LayerVersion",
     },
     "CommonResourcesCustomResourcesDeployWebsiteCustomResourceECB9B136": {
+      "Condition": "CommonResourcesDeployDemoUICondition308D3B09",
       "DeletionPolicy": "Delete",
       "Properties": {
         "DestinationBucketName": {
@@ -1622,7 +1607,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
           },
         ],
         "SourceObjectKeys": [
-          "beaf0371aab584813c7b607eaa04a5a81d123325bfa846c9980dbef21833f840.zip",
+          "297994e5975cd83b2ec43f52720181be7d5daf08af8987cc4d5749f99db8f777.zip",
         ],
       },
       "Type": "Custom::CDKBucketDeployment",
@@ -1747,6 +1732,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
+      "Condition": "CommonResourcesDeployDemoUICondition308D3B09",
       "DependsOn": [
         "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
         "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
@@ -1805,6 +1791,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
       "Type": "AWS::Lambda::Function",
     },
     "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265": {
+      "Condition": "CommonResourcesDeployDemoUICondition308D3B09",
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1842,6 +1829,7 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF": {
+      "Condition": "CommonResourcesDeployDemoUICondition308D3B09",
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1935,20 +1923,20 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DefaultApplicationAttributesFC1CC26B": {
+    "DefaultApplicationAttributeGroup41AD7209": {
       "Properties": {
         "Attributes": {
           "applicationType": "AWS-Solutions",
           "solutionID": "S0ABC",
           "solutionName": "sih",
-          "version": "v6.1.0",
+          "version": "v6.2.1",
         },
         "Description": "Attribute group for solution information",
         "Name": {
           "Fn::Join": [
             "",
             [
-              "AppRegistry-",
+              "A30-AppRegistry-",
               {
                 "Ref": "AWS::StackName",
               },
@@ -1960,6 +1948,23 @@ exports[`Serverless Image Handler Stack Snapshot 1`] = `
         },
       },
       "Type": "AWS::ServiceCatalogAppRegistry::AttributeGroup",
+    },
+    "DefaultApplicationAttributeGroupApplicationAttributeGroupAssociation8a890967e42369633265": {
+      "Properties": {
+        "Application": {
+          "Fn::GetAtt": [
+            "AppRegistry968496A3",
+            "Id",
+          ],
+        },
+        "AttributeGroup": {
+          "Fn::GetAtt": [
+            "DefaultApplicationAttributeGroup41AD7209",
+            "Id",
+          ],
+        },
+      },
+      "Type": "AWS::ServiceCatalogAppRegistry::AttributeGroupAssociation",
     },
     "FrontEndDistributionToS3CloudFrontDistribution15FE13D0": {
       "Condition": "CommonResourcesDeployDemoUICondition308D3B09",

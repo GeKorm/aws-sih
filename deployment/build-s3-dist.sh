@@ -5,8 +5,8 @@
 set -e
 
 # Check to see if input has been provided:
-if [ -z "$DIST_OUTPUT_BUCKET" ] || [ -z "$SOLUTION_NAME" ] || [ -z "$VERSION" ]; then
-    echo "Please provide the base source bucket name, trademark approved solution name and version through environment variables"
+if [ -z "$SOLUTION_NAME" ]; then
+    echo "Please provide the trademark approved solution name through environment variables"
     exit 1
 fi
 
@@ -43,4 +43,4 @@ rm ./*.template.json
 
 headline "[Package] Generate public assets for lambda and ui"
 cd "$deployment_dir"/cdk-solution-helper/asset-packager && npm ci
-npx ts-node ./index "$staging_dist_dir" "$build_dist_dir"
+npm run ts-node ./index "$staging_dist_dir" "$build_dist_dir"
