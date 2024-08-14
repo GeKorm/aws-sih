@@ -2,7 +2,7 @@
 name: Code Style and Lint
 
 on:
-  push: 
+  push:
     branches:
       - '*'
   pull_request:
@@ -11,21 +11,21 @@ on:
 jobs:
   prettier:
     name: Style Check
-    if: ${{ (github.repository_owner != 'aws-solutions' && github.event_name == 'push') || (github.repository_owner == 'aws-solutions' && github.event_name == 'pull_request') }}
+    if: ${{ (github.repository_owner != 'GeKorm' && github.event_name == 'push') || (github.repository_owner == 'GeKorm' && github.event_name == 'pull_request') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - run: npx --y prettier --config source/.prettierrc.yml --check 'source/**/*.ts'
+      - run: npm run prettier -- --config source/.prettierrc.yml --check 'source/**/*.ts'
   linter:
     name: Lint Check
-    if: ${{ (github.repository_owner != 'aws-solutions' && github.event_name == 'push') || (github.repository_owner == 'aws-solutions' && github.event_name == 'pull_request') }}
+    if: ${{ (github.repository_owner != 'GeKorm' && github.event_name == 'push') || (github.repository_owner == 'GeKorm' && github.event_name == 'pull_request') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -33,4 +33,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: |
           cd source && npm i
-          npx --y eslint . --ext .ts
+          npm run eslint -- . --ext .ts

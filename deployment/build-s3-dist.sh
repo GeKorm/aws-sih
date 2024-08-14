@@ -38,7 +38,7 @@ npm --prefix "$source_dir" run bump-version
 headline "[Build] Synthesize cdk template and assets"
 cd "$cdk_source_dir"
 npm run clean:install
-overrideWarningsEnabled=false npx cdk synth --quiet --asset-metadata false --path-metadata --output="$staging_dist_dir"
+overrideWarningsEnabled=false npm run cdk -- synth --quiet --asset-metadata false --path-metadata --output="$staging_dist_dir"
 cd "$staging_dist_dir"
 rm tree.json manifest.json cdk.out ./*.assets.json
 cp "$staging_dist_dir"/*.template.json "$template_dist_dir"/"$SOLUTION_NAME".template
@@ -46,5 +46,5 @@ rm ./*.template.json
 
 headline "[Package] Generate public assets for lambda and ui"
 cd "$deployment_dir"/cdk-solution-helper/asset-packager && npm ci
-npx ts-node ./index "$staging_dist_dir" "$build_dist_dir"
+npm run ts-node -- ./index "$staging_dist_dir" "$build_dist_dir"
 rm -rf $staging_dist_dir

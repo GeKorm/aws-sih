@@ -10,11 +10,13 @@ import { SolutionConstructProps } from "../types";
 import { CustomResourcesConstruct } from "./custom-resources/custom-resource-construct";
 import * as appreg from "@aws-cdk/aws-servicecatalogappregistry-alpha";
 
-export interface CommonResourcesProps extends SolutionConstructProps {
+interface CommonProps {
   readonly solutionId: string;
   readonly solutionVersion: string;
   readonly solutionName: string;
 }
+
+export interface CommonResourcesProps extends SolutionConstructProps, CommonProps {}
 
 export interface Conditions {
   readonly deployUICondition: CfnCondition;

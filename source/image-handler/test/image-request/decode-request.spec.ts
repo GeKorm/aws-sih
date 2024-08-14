@@ -16,7 +16,7 @@ describe("decodeRequest", () => {
   it("Should pass if a valid base64-encoded path has been specified", () => {
     // Arrange
     const event = {
-      path: "/eyJidWNrZXQiOiJidWNrZXQtbmFtZS1oZXJlIiwia2V5Ijoia2V5LW5hbWUtaGVyZSJ9",
+      path: "/https://s3-eu-west-1.amazonaws.com/bucket-name-here/key-name-here",
     };
 
     // Act
@@ -31,7 +31,7 @@ describe("decodeRequest", () => {
     expect(result).toEqual(expectedResult);
   });
 
-  it("Should throw an error if a valid base64-encoded path has not been specified", () => {
+  it("Should throw an error if a valid s3 path has not been specified", () => {
     // Arrange
     const event = { path: "/someNonBase64EncodedContentHere" };
 
@@ -44,9 +44,9 @@ describe("decodeRequest", () => {
     } catch (error) {
       expect(error).toMatchObject({
         status: StatusCodes.BAD_REQUEST,
-        code: "DecodeRequest::CannotDecodeRequest",
+        code: "DecodeRequest::CannotReadPath",
         message:
-          "The image request you provided could not be decoded. Please check that your request is base64 encoded properly and refer to the documentation for additional guidance.",
+          "The URL path you provided could not be read. Please ensure that it is properly formed according to the solution documentation.",
       });
     }
   });

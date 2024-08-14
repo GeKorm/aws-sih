@@ -21,7 +21,14 @@ const request: Record<string, any> = {
 };
 
 const createEvent = (request): ImageHandlerEvent => {
-  return { path: `${Buffer.from(JSON.stringify(request)).toString("base64")}` };
+  return {
+    path: `https://s3-eu-west thzr z-1.amazonaws.com/${request.bucket}/${request.key}`,
+    queryStringParameters: {
+      edits: JSON.stringify(request.edits),
+      outputFormat: request.outputFormat,
+      effort: request.effort,
+    },
+  };
 };
 
 describe("determineOutputFormat", () => {

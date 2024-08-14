@@ -25,7 +25,7 @@ describe("parseImageBucket", () => {
   it("Should pass if the bucket name is provided in the image request and has been allowed in SOURCE_BUCKETS", () => {
     // Arrange
     const event = {
-      path: "/eyJidWNrZXQiOiJhbGxvd2VkQnVja2V0MDAxIiwia2V5Ijoic2FtcGxlSW1hZ2VLZXkwMDEuanBnIiwiZWRpdHMiOnsiZ3JheXNjYWxlIjoidHJ1ZSJ9fQ==",
+      path: "/https://s3-eu-west-1.amazonaws.com/allowedBucket001/key-name-here",
     };
     process.env.SOURCE_BUCKETS = "allowedBucket001, allowedBucket002";
 
@@ -41,7 +41,7 @@ describe("parseImageBucket", () => {
   it("Should throw an error if the bucket name is provided in the image request but has not been allowed in SOURCE_BUCKETS", () => {
     // Arrange
     const event = {
-      path: "/eyJidWNrZXQiOiJhbGxvd2VkQnVja2V0MDAxIiwia2V5Ijoic2FtcGxlSW1hZ2VLZXkwMDEuanBnIiwiZWRpdHMiOnsiZ3JheXNjYWxlIjoidHJ1ZSJ9fQ==",
+      path: "/https://s3-eu-west-1.amazonaws.com/allowedBucket001/key-name-here",
     };
     process.env.SOURCE_BUCKETS = "allowedBucket003, allowedBucket004";
 
@@ -79,7 +79,7 @@ describe("parseImageBucket", () => {
 
   it("Should pass if there is at least one SOURCE_BUCKET specified that can be used as the default for Thumbor requests", () => {
     // Arrange
-    const event = { path: "/filters:grayscale()/test-image-001.jpg" };
+    const event = { path: "/thumbor/filters:grayscale()/test-image-001.jpg" };
     process.env.SOURCE_BUCKETS = "allowedBucket001, allowedBucket002";
 
     // Act
@@ -93,7 +93,7 @@ describe("parseImageBucket", () => {
 
   it("Should pass if there is at least one SOURCE_BUCKET specified that can be used as the default for Custom requests", () => {
     // Arrange
-    const event = { path: "/filters:grayscale()/test-image-001.jpg" };
+    const event = { path: "/thumbor/filters:grayscale()/test-image-001.jpg" };
 
     process.env.SOURCE_BUCKETS = "allowedBucket001, allowedBucket002";
 
@@ -108,7 +108,7 @@ describe("parseImageBucket", () => {
 
   it("Should pass if there is at least one SOURCE_BUCKET specified that can be used as the default for Custom requests", () => {
     // Arrange
-    const event = { path: "/filters:grayscale()/test-image-001.jpg" };
+    const event = { path: "/thumbor/filters:grayscale()/test-image-001.jpg" };
     process.env.SOURCE_BUCKETS = "allowedBucket001, allowedBucket002";
 
     // Act

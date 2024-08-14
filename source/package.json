@@ -9,8 +9,10 @@
     "url": "https://aws.amazon.com/solutions"
   },
   "scripts": {
-    "lint": "npx eslint . --ext .ts",
-    "prettier-format": "npx prettier --config .prettierrc.yml '**/*.ts' --write",
+    "lint": "npm run eslint -- . --ext .ts",
+    "prettier": "prettier",
+    "eslint": "eslint",
+    "prettier-format": "npm run prettier -- --config .prettierrc.yml '**/*.ts' --write",
     "install:custom-resource": "cd ./custom-resource && npm run clean && npm ci",
     "install:image-handler": "cd ./image-handler && npm run clean && npm ci",
     "install:demo-ui": "cd ./demo-ui && npm run clean && npm ci",
@@ -29,8 +31,8 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-jsdoc": "^46.8.2",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "~2.8.8"
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "~3.0.2"
   },
   "overrides": {
     "semver": "7.5.4",

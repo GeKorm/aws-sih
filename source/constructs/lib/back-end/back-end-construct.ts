@@ -8,26 +8,45 @@ import {
   CacheHeaderBehavior,
   CachePolicy,
   CacheQueryStringBehavior,
+  CfnDistribution,
   DistributionProps,
+  Function,
+  FunctionCode,
+  FunctionEventType,
+  FunctionRuntime,
   IOrigin,
   OriginRequestPolicy,
   OriginSslPolicy,
   PriceClass,
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 import { HttpOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { Policy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { IBucket } from "aws-cdk-lib/aws-s3";
+import { Certificate, CfnCertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { ArnFormat, Aws, Duration, Lazy, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { CloudFrontToApiGatewayToLambda } from "@aws-solutions-constructs/aws-cloudfront-apigateway-lambda";
 
 import { addCfnSuppressRules } from "../../utils/utils";
-import { SolutionConstructProps } from "../types";
+import { QueryStringParameters } from "../../../image-handler/lib";
+import { SolutionConstructProps, CapitalizeInterface, YesNo } from "../types";
+import { Conditions } from "../common-resources/common-resources-construct";
 import * as api from "aws-cdk-lib/aws-apigateway";
+import OriginShieldProperty = CfnDistribution.OriginShieldProperty;
+
+const queryStringParameters: (keyof QueryStringParameters)[] = [
+  "signature",
+  "edits",
+  "headers",
+  "effort",
+  "outputFormat",
+];
 
 export interface BackEndProps extends SolutionConstructProps {
   readonly solutionVersion: string;
@@ -38,10 +57,15 @@ export interface BackEndProps extends SolutionConstructProps {
   readonly uuid: string;
   readonly cloudFrontPriceClass: string;
   readonly createSourceBucketsResource: (key?: string) => string[];
+  readonly certificate?: Certificate;
+  readonly hostedZone?: HostedZone;
+  readonly customDomain?: string;
+  readonly conditions: Conditions;
 }
 
 export class BackEnd extends Construct {
   public domainName: string;
+  public aRecord?: ARecord;
 
   constructor(scope: Construct, id: string, props: BackEndProps) {
     super(scope, id);
@@ -148,13 +172,13 @@ export class BackEnd extends Construct {
       maxTtl: Duration.days(365),
       enableAcceptEncodingGzip: false,
       headerBehavior: CacheHeaderBehavior.allowList("origin", "accept"),
-      queryStringBehavior: CacheQueryStringBehavior.allowList("signature"),
+      queryStringBehavior: CacheQueryStringBehavior.allowList(...queryStringParameters),
     });
 
     const originRequestPolicy = new OriginRequestPolicy(this, "OriginRequestPolicy", {
       originRequestPolicyName: `ServerlessImageHandler-${props.uuid}`,
       headerBehavior: CacheHeaderBehavior.allowList("origin", "accept"),
-      queryStringBehavior: CacheQueryStringBehavior.allowList("signature"),
+      queryStringBehavior: CacheQueryStringBehavior.allowList(...queryStringParameters),
     });
 
     const apiGatewayRestApi = RestApi.fromRestApiId(
@@ -170,6 +194,26 @@ export class BackEnd extends Construct {
       originSslProtocols: [OriginSslPolicy.TLS_V1_1, OriginSslPolicy.TLS_V1_2],
     });
 
+    // Inspired by https://github.com/aws-solutions/serverless-image-handler/issues/304#issuecomment-1172255508
+    // Add a cloudfront Function to normalize the accept header
+    const normalizeAcceptHeaderFunction = new Function(this, "NormalizeAcceptHeaderFunction", {
+      runtime: FunctionRuntime.JS_2_0,
+      functionName: `normalize-accept-headers-${Aws.REGION}`,
+      code: FunctionCode.fromInline(`
+function handler(event) {
+  if (event.request.headers && event.request.headers.accept && event.request.headers.accept.value) {
+    let resultingHeader = "image/jpg";
+    const acceptheadervalue = event.request.headers.accept.value;
+    if (acceptheadervalue.includes("image/webp")) {
+      resultingHeader = "image/webp";
+    }
+    event.request.headers.accept = { value: resultingHeader };
+  }
+  return event.request;
+}
+`),
+    });
+
     const cloudFrontDistributionProps: DistributionProps = {
       comment: "Image Handler Distribution for Serverless Image Handler",
       defaultBehavior: {
@@ -178,7 +222,15 @@ export class BackEnd extends Construct {
         viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
         originRequestPolicy,
         cachePolicy,
+        functionAssociations: [
+          {
+            function: normalizeAcceptHeaderFunction,
+            eventType: FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
+      domainNames: props.customDomain ? [props.customDomain] : undefined,
+      certificate: props.certificate,
       priceClass: props.cloudFrontPriceClass as PriceClass,
       enableLogging: true,
       logBucket: props.logsBucket,
@@ -229,6 +281,41 @@ export class BackEnd extends Construct {
 
     imageHandlerCloudFrontApiGatewayLambda.apiGateway.node.tryRemoveChild("Endpoint"); // we don't need the RestApi endpoint in the outputs
 
+    if (props.customDomain) {
+      (
+        imageHandlerCloudFrontApiGatewayLambda.cloudFrontWebDistribution.node.defaultChild as CfnDistribution
+      ).addPropertyOverride("DistributionConfig.ViewerCertificate", {
+        AcmCertificateArn: (props.certificate?.node.defaultChild as CfnCertificate).ref,
+        MinimumProtocolVersion: "TLSv1.2_2021",
+        SslSupportMethod: "sni-only",
+      });
+
+      (
+        imageHandlerCloudFrontApiGatewayLambda.cloudFrontWebDistribution.node.defaultChild as CfnDistribution
+      ).addPropertyOverride("DistributionConfig.Aliases", [props.customDomain]);
+
+      this.aRecord = new ARecord(this, "ARecord", {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        zone: props.hostedZone!,
+        target: RecordTarget.fromAlias(
+          new CloudFrontTarget(imageHandlerCloudFrontApiGatewayLambda.cloudFrontWebDistribution)
+        ),
+        recordName: props.customDomain,
+      });
+    }
+
     this.domainName = imageHandlerCloudFrontApiGatewayLambda.cloudFrontWebDistribution.distributionDomainName;
+
+    const originShieldEnabled = (this.node.tryGetContext("originShieldEnabled") as YesNo | undefined) === "Yes";
+    const originShieldRegion: string = this.node.tryGetContext("originShieldRegion") || process.env.AWS_REGION;
+
+    if (originShieldEnabled) {
+      (
+        imageHandlerCloudFrontApiGatewayLambda.cloudFrontWebDistribution.node.defaultChild as CfnDistribution
+      ).addPropertyOverride("DistributionConfig.Origins.0.OriginShield", {
+        Enabled: true,
+        OriginShieldRegion: originShieldRegion,
+      } as CapitalizeInterface<OriginShieldProperty>);
+    }
   }
 }

@@ -31,7 +31,7 @@ To send us a pull request, please:
 1. Fork the repository.
 1. Modify the source; please focus on the specific change you are contributing.
 1. Add new unit tests for the new code.
-1. Run _npx npm run prettier-format_ in _source_ to ensure that code format standards are maintained.
+1. Run _npm run prettier-format_ in _source_ to ensure that code format standards are maintained.
 1. If your changes include new capabilities, include in the PR description text that can be folded into the solution documentation.
 1. Commit to your fork using clear commit messages.
 1. In your repository _Security_ section, ensure that security advisories are enabled and address any Dependabot issues that appear.

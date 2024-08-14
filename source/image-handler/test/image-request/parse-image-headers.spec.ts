@@ -5,7 +5,7 @@ import S3 from "aws-sdk/clients/s3";
 import SecretsManager from "aws-sdk/clients/secretsmanager";
 
 import { ImageRequest } from "../../image-request";
-import { RequestTypes } from "../../lib";
+import { ImageFormatTypes, RequestTypes } from "../../lib";
 import { SecretProvider } from "../../secret-provider";
 
 describe("parseImageHeaders", () => {
@@ -16,7 +16,11 @@ describe("parseImageHeaders", () => {
   it("001/Should return headers if headers are provided for a sample base64-encoded image request", () => {
     // Arrange
     const event = {
-      path: "/eyJidWNrZXQiOiJ2YWxpZEJ1Y2tldCIsImtleSI6InZhbGlkS2V5IiwiaGVhZGVycyI6eyJDYWNoZS1Db250cm9sIjoibWF4LWFnZT0zMTUzNjAwMCxwdWJsaWMifSwib3V0cHV0Rm9ybWF0IjoianBlZyJ9",
+      path: "/https://s3-eu-west-1.amazonaws.com/validBucket/validKey",
+      queryStringParameters: {
+        headers: JSON.stringify({ "Cache-Control": "max-age=31536000,public" }),
+        outputFormat: ImageFormatTypes.JPEG,
+      },
     };
 
     // Act

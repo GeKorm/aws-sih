@@ -1,7 +1,7 @@
 name: Pull Request Workflow
 
 on:
-  push: 
+  push:
     branches:
       - '*'
   pull_request:
@@ -10,7 +10,7 @@ on:
 jobs:
   pull-request-job:
     name: Status Checks
-    if: ${{ (github.repository_owner != 'aws-solutions' && github.event_name == 'push') || (github.repository_owner == 'aws-solutions' && github.event_name == 'pull_request') }}
+    if: ${{ (github.repository_owner != 'GeKorm' && github.event_name == 'push') || (github.repository_owner == 'GeKorm' && github.event_name == 'pull_request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

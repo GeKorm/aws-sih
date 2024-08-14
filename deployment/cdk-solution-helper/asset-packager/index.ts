@@ -18,7 +18,7 @@ export async function handler(cdkAssetFolderPath: string | undefined, outputPath
 
 if (require.main === module) {
   // this module was run directly from the command line, getting command line arguments
-  // e.g. npx ts-node index.ts cdkAssetPath outputPath
+  // e.g. npm run ts-node -- index.ts cdkAssetPath outputPath
   const cdkAssetPath = process.argv[2];
   const outputPath = process.argv[3];
   handler(cdkAssetPath, outputPath)

@@ -6,7 +6,7 @@ import { ThumborMapper } from "../../thumbor-mapper";
 describe("resize", () => {
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/fit-in/400x300/test-image-001.jpg";
+    const path = "/thumbor/fit-in/400x300/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();
@@ -21,7 +21,7 @@ describe("resize", () => {
 
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/fit-in/test-image-001.jpg";
+    const path = "/thumbor/fit-in/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();
@@ -34,7 +34,7 @@ describe("resize", () => {
 
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/400x300/test-image-001.jpg";
+    const path = "/thumbor/400x300/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();
@@ -47,7 +47,7 @@ describe("resize", () => {
 
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/0x300/test-image-001.jpg";
+    const path = "/thumbor/0x300/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();
@@ -62,7 +62,7 @@ describe("resize", () => {
 
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/400x0/test-image-001.jpg";
+    const path = "/thumbor/400x0/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();
@@ -77,7 +77,7 @@ describe("resize", () => {
 
   it("Should pass if the proper edit translations are applied and in the correct order", () => {
     // Arrange
-    const path = "/0x0/test-image-001.jpg";
+    const path = "/thumbor/0x0/test-image-001.jpg";
 
     // Act
     const thumborMapper = new ThumborMapper();

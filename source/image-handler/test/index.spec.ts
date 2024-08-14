@@ -58,7 +58,12 @@ describe("index", () => {
     }));
     // Arrange
     const event: ImageHandlerEvent = {
-      path: "/eyJidWNrZXQiOiJzb3VyY2UtYnVja2V0Iiwia2V5IjoidGVzdC5qcGciLCJoZWFkZXJzIjp7IkN1c3RvbS1IZWFkZXIiOiJDdXN0b21WYWx1ZSJ9fQ==",
+      path: "/https://s3-eu-west-1.amazonaws.com/source-bucket/test.jpg",
+      queryStringParameters: {
+        headers: JSON.stringify({
+          "Custom-Header": "CustomValue",
+        }),
+      },
     };
 
     // Act
@@ -165,7 +170,10 @@ describe("index", () => {
   it("should return 500 error when there is no error status in the error", async () => {
     // Arrange
     const event: ImageHandlerEvent = {
-      path: "eyJidWNrZXQiOiJzb3VyY2UtYnVja2V0Iiwia2V5IjoidGVzdC5qcGciLCJlZGl0cyI6eyJ3cm9uZ0ZpbHRlciI6dHJ1ZX19",
+      path: "https://s3-eu-west-1.amazonaws.com/source-bucket/test.jpg",
+      queryStringParameters: {
+        edits: JSON.stringify({ wrongFilter: true }),
+      },
     };
 
     // Mock
@@ -425,7 +433,19 @@ describe("index", () => {
     // Arrange
     // {"bucket":"source-bucket","key":"transparent-10x10.png","edits":{"overlayWith":{"bucket":"source-bucket","key":"transparent-5x5.png"}},"headers":{"Custom-Header":"Custom header test","Cache-Control":"max-age:1,public"}}
     const event: ImageHandlerEvent = {
-      path: "eyJidWNrZXQiOiJzb3VyY2UtYnVja2V0Iiwia2V5IjoidHJhbnNwYXJlbnQtMTB4MTAucG5nIiwiZWRpdHMiOnsib3ZlcmxheVdpdGgiOnsiYnVja2V0Ijoic291cmNlLWJ1Y2tldCIsImtleSI6InRyYW5zcGFyZW50LTV4NS5wbmcifX0sImhlYWRlcnMiOnsiQ3VzdG9tLUhlYWRlciI6IkN1c3RvbSBoZWFkZXIgdGVzdCIsIkNhY2hlLUNvbnRyb2wiOiJtYXgtYWdlOjEscHVibGljIn19",
+      path: "source-bucket/transparent-10x10.png",
+      queryStringParameters: {
+        edits: JSON.stringify({
+          overlayWith: {
+            bucket: "source-bucket",
+            key: "transparent-5x5.png",
+          },
+        }),
+        headers: JSON.stringify({
+          "Custom-Header": "Custom header test",
+          "Cache-Control": "max-age:1,public",
+        }),
+      },
     };
     // Mock
     const overlayImage = fs.readFileSync("./test/image/transparent-5x5.jpeg");

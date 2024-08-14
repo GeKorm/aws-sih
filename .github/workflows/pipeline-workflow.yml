@@ -1,26 +1,55 @@
-name: Pipeline Workflow
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 env:
-  REGION: us-east-1
-
-on: push
+  SOURCE_BUCKETS: ${{ secrets.SOURCE_BUCKETS }}
+  CUSTOM_DOMAIN: ${{ secrets.CUSTOM_DOMAIN }}
+  DEMO_UI: ${{ vars.DEMO_UI }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
   pipeline-job:
     name: Pipeline Job
-    if: github.repository_owner == 'aws-solutions'
+    if: github.repository_owner == 'GeKorm'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: read
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.DISPATCHER_ROLE_ARN }}
-          aws-region: ${{ env.REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
           role-duration-seconds: 900
           role-session-name: OIDCSession
-      - name: Run CodeBuild
-        uses: aws-actions/aws-codebuild-run-build@v1
+      - name: Checkout repo
+        uses: actions/checkout@v3
         with:
-          project-name: ${{ secrets.DISPATCHER_CODEBUILD_PROJECT_NAME }}
+          ref: main
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Run tests
+        working-directory: ./deployment
+        run: chmod +x run-unit-tests.sh && ./run-unit-tests.sh
+      - name: Install dependencies
+        working-directory: ./source/constructs
+        run: npm run clean:install
+      - name: Deploy without domain
+        working-directory: ./source/constructs
+        if: ${{ env.CUSTOM_DOMAIN == '' }}
+        run: overrideWarningsEnabled=false npm run cdk -- deploy --parameters DeployDemoUIParameter=$DEMO_UI --parameters SourceBucketsParameter=$SOURCE_BUCKETS --parameters AutoWebPParameter=Yes
+      - name: Deploy with custom domain
+        working-directory: ./source/constructs
+        if: ${{ env.CUSTOM_DOMAIN != '' }}
+        run: overrideWarningsEnabled=false npm run cdk -- deploy --parameters ServerlessImageHandlerStack:DeployDemoUIParameter=$DEMO_UI --context customDomain=$CUSTOM_DOMAIN --parameters ServerlessImageHandlerStack:SourceBucketsParameter=$SOURCE_BUCKETS --parameters ServerlessImageHandlerStack:AutoWebPParameter=Yes --all

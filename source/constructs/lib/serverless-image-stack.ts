@@ -2,19 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { PriceClass } from "aws-cdk-lib/aws-cloudfront";
-import { Aspects, CfnMapping, CfnOutput, CfnParameter, Stack, StackProps, Tags } from "aws-cdk-lib";
+import { Aspects, CfnMapping, CfnOutput, CfnParameter, Stack, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { ConditionAspect, SuppressLambdaFunctionCfnRulesAspect } from "../utils/aspects";
 import { BackEnd } from "./back-end/back-end-construct";
 import { CommonResources } from "./common-resources/common-resources-construct";
 import { FrontEndConstruct as FrontEnd } from "./front-end/front-end-construct";
-import { SolutionConstructProps, YesNo } from "./types";
-
-export interface ServerlessImageHandlerStackProps extends StackProps {
-  readonly solutionId: string;
-  readonly solutionName: string;
-  readonly solutionVersion: string;
-}
+import { ServerlessImageHandlerStackProps, SolutionConstructProps, YesNo } from "./types";
 
 export class ServerlessImageHandlerStack extends Stack {
   constructor(scope: Construct, id: string, props: ServerlessImageHandlerStackProps) {
@@ -116,6 +110,8 @@ export class ServerlessImageHandlerStack extends Stack {
       default: "",
     });
 
+    const customDomain: YesNo | undefined = this.node.tryGetContext("customDomain");
+
     const fallbackImageS3KeyParameter = new CfnParameter(this, "FallbackImageS3KeyParameter", {
       type: "String",
       description: "The name of the default fallback image object key including prefix. e.g. prefix/image.jpg",
@@ -133,7 +129,7 @@ export class ServerlessImageHandlerStack extends Stack {
     const solutionMapping = new CfnMapping(this, "Solution", {
       mapping: {
         Config: {
-          AnonymousUsage: "Yes",
+          AnonymousUsage: "No",
           SolutionId: props.solutionId,
           Version: props.solutionVersion,
         },
@@ -156,6 +152,7 @@ export class ServerlessImageHandlerStack extends Stack {
       enableDefaultFallbackImage: enableDefaultFallbackImageParameter.valueAsString as YesNo,
       fallbackImageS3Bucket: fallbackImageS3BucketParameter.valueAsString,
       fallbackImageS3KeyBucket: fallbackImageS3KeyParameter.valueAsString,
+      customDomain,
     };
 
     const commonResources = new CommonResources(this, "CommonResources", {
@@ -179,6 +176,9 @@ export class ServerlessImageHandlerStack extends Stack {
       uuid: commonResources.customResources.uuid,
       cloudFrontPriceClass: cloudFrontPriceClassParameter.valueAsString,
       createSourceBucketsResource: commonResources.customResources.createSourceBucketsResource,
+      certificate: props.certificate,
+      hostedZone: props.hostedZone,
+      conditions: commonResources.conditions,
       ...solutionConstructProps,
     });
 
@@ -301,6 +301,12 @@ export class ServerlessImageHandlerStack extends Stack {
       value: `https://${backEnd.domainName}`,
       description: "Link to API endpoint for sending image requests to.",
     });
+    if (customDomain) {
+      new CfnOutput(this, "CustomDomain", {
+        value: customDomain,
+        description: "The custom domain name for this distribution",
+      });
+    }
     new CfnOutput(this, "DemoUrl", {
       value: `https://${frontEnd.domainName}/index.html`,
       description: "Link to the demo user interface for the solution.",

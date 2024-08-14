@@ -6,23 +6,27 @@ import sharp from "sharp";
 import { ImageFormatTypes, RequestTypes, StatusCodes } from "./enums";
 import { Headers, ImageEdits } from "./types";
 
-export interface ImageHandlerEvent {
-  path?: string;
-  queryStringParameters?: {
-    signature: string;
-  };
-  requestContext?: {
-    elb?: unknown;
-  };
-  headers?: Headers;
-}
-
 export interface DefaultImageRequest {
   bucket?: string;
   key: string;
   edits?: ImageEdits;
   outputFormat?: ImageFormatTypes;
   effort?: number;
+  headers?: Headers;
+}
+
+export interface QueryStringParameters extends Omit<DefaultImageRequest, "bucket" | "key" | "edits" | "headers"> {
+  signature?: string;
+  edits?: string;
+  headers?: string;
+}
+
+export interface ImageHandlerEvent {
+  path?: string;
+  queryStringParameters?: QueryStringParameters;
+  requestContext?: {
+    elb?: unknown;
+  };
   headers?: Headers;
 }
 
